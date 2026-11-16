@@ -1,7 +1,5 @@
-import math
-
-# Константа розміру таблиці для множення
-M = 16
+# Константа розміру таблиці
+M = 13
 
 # Список вхідних слів
 WORDS = ["БЕЗ", "ТРУДА", "НЕМА", "ПЛОДА", "А", "БЕЗ", "НАУКИ", "МУДРОСТІ"]
@@ -16,32 +14,35 @@ LETTER_POSITIONS = {
 
 def simple_hash_from_map(key: str) -> int:
     """
-    Хеш-функція: h(k) = 16 * (K * A mod 1)
+    Хеш-функція: h(k) = (сума позицій букв) mod 13.
+    Використовує пряме відображення позицій з LETTER_POSITIONS.
     """
     sum_of_positions = 0
     for char in key:
         position = LETTER_POSITIONS.get(char, 0)
         sum_of_positions += position
         
-    # Формула множення
-    A = 0.618033
-    fractional_part = (sum_of_positions * A) % 1
-    hash_address = math.floor(M * fractional_part)
+    hash_address = sum_of_positions % M
     return hash_address
 
 def build_open_hash_table(words: list, m: int) -> list:
     """
     Будує хеш-таблицю з ланцюжками (списками).
     """
+    # 1. Ініціалізація таблиці: M порожніх ланцюжків
     hash_table = [[] for _ in range(m)]
+    
+    # 2. Обробка кожного слова
     for word in words:
         address = simple_hash_from_map(word)
+        # Додавання слова до відповідного ланцюжка
         hash_table[address].append(word)
+        
     return hash_table
 
 def display_hash_table(table: list):
     """Виводить хеш-таблицю у зручному форматі."""
-    print("\n--- Результат хешування (Таблиця M=16, Метод множення) ---")
+    print("\n--- Результат хешування (Таблиця M=13, Метод ділення) ---")
     for i, chain in enumerate(table):
         print(f"Індекс {i:02d}: {chain}")
 
